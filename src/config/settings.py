@@ -134,7 +134,7 @@ AUTH_USER_MODEL = "accounts.User"
 
 # Rest Framework
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication",
-    ]
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',  # Add this line
+    ],
 }
