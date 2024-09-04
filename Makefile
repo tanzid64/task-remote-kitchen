@@ -27,3 +27,6 @@ collectstatic:
 
 superuser:
 	docker compose -f docker-compose.yml run --rm api python manage.py createsuperuser
+
+test:
+	docker compose -f docker-compose.yml run --rm api python manage.py test
