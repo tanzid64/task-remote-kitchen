@@ -2,11 +2,9 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUSerAdmin
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
-from accounts.models import (
-    User,
-    OwnerProfile,
-    EmployeeProfile,
-)
+
+User = get_user_model()
+
 # Register your models here.
 @admin.register(User)
 class UserAdmin(BaseUSerAdmin):
@@ -28,18 +26,3 @@ class UserAdmin(BaseUSerAdmin):
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
 
-@admin.register(OwnerProfile)
-class OwnerProfileAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "user",
-        "license_no"
-    )
-
-@admin.register(EmployeeProfile)
-class EmployeeProfileAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "user",
-        "shift"
-    )
