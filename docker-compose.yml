@@ -1,0 +1,52 @@
+version: '3.10'
+services:
+  db:
+    container_name: postgres-db
+    image: postgres:16
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./src/.env
+    networks:
+      - django_network
+
+  pgadmin:
+    container_name: pgadmin4
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - "8080:80"
+    env_file:
+      - ./src/.env
+    depends_on:
+      - db
+    networks:
+      - django_network
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+  api:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    container_name: api_container
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./src:/app  # Adjusted volume mount for better path consistency
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - ./src/.env
+    networks:
+      - django_network
+
+networks:
+  django_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  pgadmin_data:
