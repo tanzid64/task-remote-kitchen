@@ -18,8 +18,6 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY . .
 
 # stage 6: run
-# Migrate DB
-# Collect Static Files
 # Expose the port the app runs on
 # EXPOSE 8000
 
