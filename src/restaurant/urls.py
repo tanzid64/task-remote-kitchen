@@ -1,8 +1,11 @@
-from django.urls import path
-from .views import AddEmployeeView, RestaurantListView, RestaurantDetailView
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import AddEmployeeView, RestaurantViewSet
+
+router = DefaultRouter()
+router.register("", RestaurantViewSet)
 
 urlpatterns = [
     path("add-employee/", AddEmployeeView.as_view(), name="add-employee"),
-    path("all/", RestaurantListView.as_view(), name="all-restaurant-list"),
-    path("<str:slug>/", RestaurantDetailView.as_view(), name="restaurant-detail"),
+    path("", include(router.urls)),
 ]

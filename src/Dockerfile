@@ -15,7 +15,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
     rm -rf .pip-cache
 
 # stage 5: copy project
-COPY . .
+COPY . /app
+
+# stage 5: collect static
 
 # stage 6: run
 # Expose the port the app runs on

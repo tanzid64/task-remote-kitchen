@@ -12,7 +12,7 @@ class Restaurant(TimeStampMixin):
     restaurant_name = models.CharField(verbose_name=_("Restaurant Name"), max_length=100)
     slug = AutoSlugField(populate_from="restaurant_name", unique=True) 
     address = models.CharField(verbose_name=_("Address"), max_length=100)
-    employees = models.ManyToManyField(User, related_name="employees", blank=True, null=True)
+    employees = models.ManyToManyField(User, related_name="employees", blank=True)
 
     def __str__(self):
         return self.restaurant_name

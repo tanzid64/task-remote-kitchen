@@ -1,11 +1,13 @@
 from django.shortcuts import render
+from restaurant import permissions
 from restaurant.serializers import AddEmployeeSerializer, RestaurantListSerializer
 from restaurant.models import Restaurant
-from restaurant.permissions import IsOwnerOrReadOnly, IsEmployeeOrReadOnly
+from restaurant.permissions import IsOwnerOrEmployeeOrReadOnly
 from django.contrib.auth import get_user_model  
-from rest_framework import generics, status
+from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.core.exceptions import PermissionDenied
 # Create your views here.
 
 User = get_user_model()
@@ -50,20 +52,20 @@ class AddEmployeeView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
 
-class RestaurantListView(generics.ListAPIView):
+class RestaurantViewSet(viewsets.ModelViewSet):
+    """
+    Any one can see the details of the restaurant.
+    Only Owner or Employee can update the restaurant.
+    Only Admin can delete the restaurant.
+    """
     serializer_class = RestaurantListSerializer
-    def get_queryset(self):
-        return Restaurant.objects.all()
-
-class RestaurantDetailView(generics.RetrieveUpdateAPIView):
-    serializer_class = RestaurantListSerializer
+    queryset = Restaurant.objects.all()
+    permission_classes = (IsOwnerOrEmployeeOrReadOnly,)
     lookup_field = 'slug'
-    pagination_class = (IsOwnerOrReadOnly, IsEmployeeOrReadOnly)
-    def get_queryset(self):
-        return Restaurant.objects.all()
-    
-# TODO: Test Update and Delete methods
+    http_method_names = ['get', 'put', 'patch']
+
 # TODO: Make Item & Menu CRUD operations
+
 # TODO: Make Order CRUD operations
 # TODO: Add test cases
 # TODO: API Documentation & README.md

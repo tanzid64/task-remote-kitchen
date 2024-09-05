@@ -41,14 +41,16 @@ class OwnerRegistrationView(generics.CreateAPIView):
         
         # Create token for the newly created user
         token, created = Token.objects.get_or_create(user=user)
+
+        restaurant = Restaurant.objects.get(owner=user)
         
         return Response({
             "token": token.key,
             "user_id": user.pk,
             "user_type": user.user_type,
             "username": user.username,
-            "restaurant_name": user.restaurants.restaurant_name,
-            "address": user.restaurant.address
+            "restaurant_name": restaurant.restaurant_name,
+            "address": restaurant.address
         }, status=status.HTTP_201_CREATED)
     
 class SignInView(APIView):
