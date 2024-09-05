@@ -27,10 +27,12 @@ class CreatedAtFilter(SimpleListFilter):
 
 @admin.register(Restaurant)
 class RestaurantAdmin(admin.ModelAdmin):
-    list_display = ["id", "restaurant_name", "address", "owner__username"]
+    list_display = ["id", "restaurant_name","slug", "address", "owner__username"]
     list_display_links = ["id", "restaurant_name"]
     search_fields = ["restaurant_name", "owner__username"]
     list_filter = [CreatedAtFilter,  "updated_at"]
     autocomplete_fields = ["owner"]
 
+admin.site.register(Menu)
+admin.site.register(Item)
 

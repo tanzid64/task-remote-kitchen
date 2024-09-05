@@ -19,7 +19,7 @@ class Restaurant(TimeStampMixin):
     
 class Menu(TimeStampMixin):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
+    name = models.CharField(verbose_name=_("Menu Name"), max_length=100)
     slug = AutoSlugField(populate_from="name", unique=True) 
     details = models.TextField(max_length=500)
 
@@ -28,7 +28,7 @@ class Menu(TimeStampMixin):
     
 class Item(TimeStampMixin):
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
-    item_name = models.CharField(max_length=200)
+    item_name = models.CharField(verbose_name=_("Item Name"), max_length=200)
     slug = AutoSlugField(populate_from="item_name", unique=True) 
     description = models.TextField(max_length=500)
     price = models.DecimalField(max_digits=5, decimal_places=2)

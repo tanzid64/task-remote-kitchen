@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Restaurant
+from .models import Restaurant, Item, Menu
 from django.contrib.auth import get_user_model
 
 
@@ -34,4 +34,54 @@ class RestaurantListSerializer(serializers.ModelSerializer):
         )
         extra_kwargs = {
             'slug': {'read_only': True}
+        }
+class ResMiniSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    class Meta:
+        model = Restaurant
+        fields = (
+            'id',
+            'restaurant_name',
+            'slug',
+            'owner'
+        )
+class MenuGetSerializer(serializers.ModelSerializer):
+    restaurant = ResMiniSerializer()
+
+    class Meta:
+        model = Menu
+        fields = (
+            'id',
+            'restaurant',
+            'name',
+            'slug',
+            'details'
+        )
+
+class MenuPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Menu
+        fields = (
+            'name',
+            'restaurant',
+            'details'
+        )
+        extra_kwargs = {
+            'restaurant': {'required': False}
+        }
+
+class ItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields = (
+            'id',
+            'menu',
+            'item_name',
+            'slug',
+            'description',
+            'price'
+        )
+        extra_kwargs = {
+            'slug': {'read_only': True},
+            'id': {'read_only': True}
         }

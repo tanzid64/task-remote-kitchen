@@ -1,13 +1,10 @@
-from django.shortcuts import render
-from restaurant import permissions
-from restaurant.serializers import AddEmployeeSerializer, RestaurantListSerializer
-from restaurant.models import Restaurant
-from restaurant.permissions import IsOwnerOrEmployeeOrReadOnly
+from restaurant.serializers import AddEmployeeSerializer, RestaurantListSerializer, MenuGetSerializer, MenuPostSerializer
+from restaurant.models import Restaurant, Menu
+from restaurant.permissions import IsOwnerOrEmployeeOrReadOnly, IsResOwnerOrEmployeeOrReadOnly
 from django.contrib.auth import get_user_model  
 from rest_framework import generics, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.core.exceptions import PermissionDenied
 # Create your views here.
 
 User = get_user_model()
@@ -64,7 +61,63 @@ class RestaurantViewSet(viewsets.ModelViewSet):
     lookup_field = 'slug'
     http_method_names = ['get', 'put', 'patch']
 
-# TODO: Make Item & Menu CRUD operations
+class MenuViewSet(viewsets.ModelViewSet):
+    """
+    Restaurant slug included in URL.
+    Anyone can make get request for all menus and single menu details.
+    Only Owner or Employee can make post/put/patch/delete request.
+    Admin users have full access.
+    """
+    permission_classes = [IsResOwnerOrEmployeeOrReadOnly]
+    lookup_field = 'slug'
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return MenuGetSerializer
+        else:
+            return MenuPostSerializer
+
+    def get_queryset(self):
+        restaurant_slug = self.kwargs.get('restaurant_slug')
+        # Return an empty queryset if no slug is provided
+        if not restaurant_slug:
+            return Menu.objects.none()
+        
+        try:
+            restaurant = Restaurant.objects.get(slug=restaurant_slug)
+        except Restaurant.DoesNotExist:
+            # Return an empty queryset if restaurant is not found
+            return Menu.objects.none()
+
+        # Filter menus by the found restaurant
+        return Menu.objects.filter(restaurant=restaurant)
+
+    def perform_create(self, serializer):
+        restaurant_slug = self.kwargs.get('restaurant_slug')
+        if not restaurant_slug:
+            raise serializer.ValidationError("You must provide a restaurant slug.")
+
+        try:
+            restaurant = Restaurant.objects.get(slug=restaurant_slug)
+        except Restaurant.DoesNotExist:
+            raise serializer.ValidationError("Restaurant does not exist.")
+
+        # Set the restaurant instance on the menu
+        serializer.save(restaurant=restaurant)
+    
+    def perform_update(self, serializer):
+        restaurant_slug = self.kwargs.get('restaurant_slug')
+        if not restaurant_slug:
+            raise serializer.ValidationError("You must provide a restaurant slug.")
+
+        try:
+            restaurant = Restaurant.objects.get(slug=restaurant_slug)
+        except Restaurant.DoesNotExist:
+            raise serializer.ValidationError("Restaurant does not exist.")
+
+        # Set the restaurant instance on the menu
+        serializer.save(restaurant=restaurant)
+
 
 # TODO: Make Order CRUD operations
 # TODO: Add test cases

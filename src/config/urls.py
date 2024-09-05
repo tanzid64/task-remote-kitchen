@@ -7,7 +7,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/auth/", include("accounts.urls")),
-    path("api/v1/restaurant/", include("restaurant.urls")),
+    path("api/v1/", include("restaurant.urls")),
 ]
 
 if settings.DEBUG:
