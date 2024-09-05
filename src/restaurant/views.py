@@ -1,5 +1,5 @@
-from restaurant.serializers import AddEmployeeSerializer, RestaurantListSerializer, MenuGetSerializer, MenuPostSerializer
-from restaurant.models import Restaurant, Menu
+from restaurant.serializers import AddEmployeeSerializer, RestaurantListSerializer, MenuGetSerializer, MenuPostSerializer, ItemGetSerializer, ItemPostSerializer
+from restaurant.models import Restaurant, Menu, Item
 from restaurant.permissions import IsOwnerOrEmployeeOrReadOnly, IsResOwnerOrEmployeeOrReadOnly
 from django.contrib.auth import get_user_model  
 from rest_framework import generics, status, viewsets
@@ -118,6 +118,51 @@ class MenuViewSet(viewsets.ModelViewSet):
         # Set the restaurant instance on the menu
         serializer.save(restaurant=restaurant)
 
+class ItemViewSet(viewsets.ModelViewSet):
+    lookup_field = 'slug'
+    permission_classes = [IsResOwnerOrEmployeeOrReadOnly]
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return ItemGetSerializer
+        else:
+            return ItemPostSerializer
+    def get_queryset(self):
+        menu_slug = self.kwargs.get('menu_slug')
+        # Return an empty queryset if no slug is provided
+        if not menu_slug:
+            return Item.objects.none()
+        try:
+            menu = Menu.objects.get(slug=menu_slug)
+        except Menu.DoesNotExist:
+            # Return an empty queryset if menu is not found
+            return Item.objects.none()
+        return Item.objects.filter(menu=menu)
+    
+    def perform_create(self, serializer):
+        menu_slug = self.kwargs.get('menu_slug')
+        if not menu_slug:
+            raise serializer.ValidationError("You must provide a menu slug.")
+
+        try:
+            menu = Menu.objects.get(slug=menu_slug)
+        except Menu.DoesNotExist:
+            raise serializer.ValidationError("Menu does not exist.")
+
+        # Set the menu instance on the item
+        serializer.save(menu=menu)
+    
+    def perform_update(self, serializer):
+        menu_slug = self.kwargs.get('menu_slug')
+        if not menu_slug:
+            raise serializer.ValidationError("You must provide a menu slug.")
+
+        try:
+            menu = Menu.objects.get(slug=menu_slug)
+        except Menu.DoesNotExist:
+            raise serializer.ValidationError("Menu does not exist.")
+
+        # Set the menu instance on the item
+        serializer.save(menu=menu)
 
 # TODO: Make Order CRUD operations
 # TODO: Add test cases

@@ -11,9 +11,8 @@ class UserAdmin(BaseUSerAdmin):
     list_display = (
         "id", 
         "email", 
-        "first_name", 
-        "last_name", 
         "username", 
+        "user_type",
         "is_superuser",
     )
     list_display_links = ("id", "email", "username", )
@@ -21,7 +20,7 @@ class UserAdmin(BaseUSerAdmin):
     ordering = ("-date_joined", )
     fieldset = (
         (_("Login Credentials"), {"fields": ("username", "password")}),
-        (_("Personal Info"), {"fields": ("first_name", "last_name", "email")}),
+        (_("Personal Info"), {"fields": ("first_name", "last_name", "email", "user_type")}),
         (_("Permissions and Groups"), {"fields": ("is_superuser", "is_staff", "groups", "user_permission" )}),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )

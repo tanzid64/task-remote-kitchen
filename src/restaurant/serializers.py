@@ -85,3 +85,41 @@ class ItemSerializer(serializers.ModelSerializer):
             'slug': {'read_only': True},
             'id': {'read_only': True}
         }
+
+class MiniMenuSerializerForItem(serializers.ModelSerializer):
+    restaurant_name = serializers.ReadOnlyField(source='restaurant.restaurant_name')
+    restaurant_slug = serializers.ReadOnlyField(source='restaurant.slug')
+    class Meta:
+        model = Menu
+        fields = (
+            'name',
+            'slug',
+            'restaurant_name',
+            'restaurant_slug'
+        )
+
+class ItemPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields = (
+            'menu',
+            'item_name',
+            'description',
+            'price'
+        )
+        extra_kwargs = {
+            'menu': {'required': False}
+        }
+
+class ItemGetSerializer(serializers.ModelSerializer):
+    menu = MiniMenuSerializerForItem()
+    class Meta:
+        model = Item
+        fields = (
+            'id',
+            'menu',
+            'item_name',
+            'slug',
+            'description',
+            'price'
+        )

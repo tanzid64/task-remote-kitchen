@@ -44,8 +44,8 @@ class IsResOwnerOrEmployeeOrReadOnly(BasePermission):
             return True
         
         # Check if user is authenticated and is either owner or employee
-        if not request.user.is_authenticated or not (request.user.user_type == User.UserType.OWNER or request.user.user_type == User.UserType.EMPLOYEE):
-            return False
+        # if not request.user.is_authenticated or not (request.user.user_type == User.UserType.OWNER or request.user.user_type == User.UserType.EMPLOYEE):
+        #     return False
         
         # Allow all access to admins
         if request.user.is_staff:
