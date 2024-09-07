@@ -29,12 +29,14 @@ The goal is to create a simple Django backend where users can manage restaurants
 - [x] Implement permission checks in your APIs to ensure that only authorized users (connected to a specific restaurant) can create, modify, or view the menu and place orders.
 
 **Ordering and Payment**
-- [ ] Integrate Stripe API for payment processing. You can use the stripe library or any other Django-friendly Stripe package.
-- [ ] Create API endpoints for processing payments.
-- [ ] Implement a secure and efficient way to handle payment information, such as using Stripe tokens.
-- [ ] Create models for orders, including necessary fields such as items, quantity, price, etc.
-- [ ] Implement APIs for creating and managing orders.
-- [ ] Connect the ordering system to the menu, ensuring that users can create orders based on the available menu items.
+- [x] Integrate Stripe API for payment processing. You can use the stripe library or any other Django-friendly Stripe package.
+- [x] Implement a secure and efficient way to handle payment information, such as using Stripe tokens.
+- [x] Create models for orders, including necessary fields such as items, quantity, price, etc.
+- [x]Connect the ordering system to the menu, ensuring that users can create orders based on the available menu items.
+
+### API Documentation
+Documented by POSTMAN
+Link: 
 
 ### Project Installation Guide
 
@@ -52,5 +54,20 @@ make migrate
 ```bash
 make superuser
 ```
+### Set up the .env file
+
+`.env.example > .env`
+
+In your `.env` set the following environment variables:
+
+STRIPE CONFIG FOR PAYMENT
+Collect keys from stripe website.
+- `STRIPE_SECRET_KEY` : Your Stripe Secret.
+- `STRIPE_PUBLISHABLE_KEY` : Your Publishable key.
+- `STRIPE_WEBHOOK_SECRET_KEY` : Your Webhook secret.
+
+- `STRIPE_SUCCESS_URL` : Your payment success redirect url.
+- `STRIPE_CANCEL_URL` : Your payment cancel redirect url.
+
 3. Go to [localhost:8000](http://localhost:8000).
 
