@@ -42,11 +42,14 @@ The goal is to create a simple Django backend where users can manage restaurants
 
 ### Project Installation Guide
 
-1. Clone the repo and go to the project root.
+Clone the repo and go to the project root.
 ```bash
-git clone https:github.com/tanzid64/
+git clone https://github.com/tanzid64/task-remote-kitchen.git
 ```
-2. Start the docker container: 
+```bash
+cd task-remote-kitchen/
+```
+Start the docker container: 
 ```bash
 make build
 ```
