@@ -1,7 +1,5 @@
 from rest_framework import serializers
-from restaurant.models import Item
-from .models import Order, OrderItem, Payment
-from .utils import (check_expiry_month, check_expiry_year, check_cvc)
+from .models import Order, OrderItem
 
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,13 +29,3 @@ class OrderSerializer(serializers.ModelSerializer):
             OrderItem.objects.create(order=order, **item_data)
         
         return order
-    
-# Card Serializer
-"""
-Will collect the card informations from frontend and make a payment request on stripe.
-"""
-class CardInformationSerializer(serializers.Serializer):
-    card_number = serializers.CharField(max_length=150, required=True)
-    expiry_month = serializers.CharField(max_length=2, required=True, validators=[check_expiry_month])
-    expiry_year = serializers.CharField(max_length=4, required=True, validators=[check_expiry_year])
-    cvc = serializers.CharField(max_length=3, required=True, validators=[check_cvc])

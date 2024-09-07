@@ -32,7 +32,7 @@ The goal is to create a simple Django backend where users can manage restaurants
 - [x] Integrate Stripe API for payment processing. You can use the stripe library or any other Django-friendly Stripe package.
 - [x] Implement a secure and efficient way to handle payment information, such as using Stripe tokens.
 - [x] Create models for orders, including necessary fields such as items, quantity, price, etc.
-- [x]Connect the ordering system to the menu, ensuring that users can create orders based on the available menu items.
+- [x] Connect the ordering system to the menu, ensuring that users can create orders based on the available menu items.
 
 ### API Documentation
 Documented by POSTMAN

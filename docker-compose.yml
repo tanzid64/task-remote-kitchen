@@ -44,6 +44,17 @@ services:
     networks:
       - django_network
 
+  stripe-cli:
+    image: stripe/stripe-cli
+    container_name: stripe-cli
+    command: ["listen", "--api-key", "${STRIPE_SECRET_KEY}", "--forward-to", "http://api:8000/api/v1/webhook/"]
+    env_file:
+      - ./src/.env
+    networks:
+      - django_network
+
+
+
 networks:
   django_network:
     driver: bridge
