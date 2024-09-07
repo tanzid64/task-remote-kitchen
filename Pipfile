@@ -15,6 +15,7 @@ python-dotenv = "==1.0.1"
 sqlparse = "==0.5.1"
 django-environ = "*"
 django-autoslug = "*"
+stripe = "*"
 
 [dev-packages]
 
