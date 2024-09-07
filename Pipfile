@@ -16,6 +16,7 @@ sqlparse = "==0.5.1"
 django-environ = "*"
 django-autoslug = "*"
 stripe = "*"
+drf-spectacular = "*"
 
 [dev-packages]
 

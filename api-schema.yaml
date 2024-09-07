@@ -1,0 +1,1079 @@
+openapi: 3.0.3
+info:
+  title: API Collection for remote-kitchen-assesment.
+  version: '1'
+  description: The application is developed using Django REST Framework. I have used
+    rest_framework token authentication as api authentication and stripe for online
+    payment.
+paths:
+  /api/v1/{order_id}/create-payment/:
+    get:
+      operationId: create_payment_retrieve
+      parameters:
+      - in: path
+        name: order_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - create-payment
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/{restaurant_slug}/{menu_slug}/item/:
+    get:
+      operationId: item_list
+      parameters:
+      - in: path
+        name: menu_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: restaurant_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - item
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ItemGet'
+          description: ''
+    post:
+      operationId: item_create
+      parameters:
+      - in: path
+        name: menu_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: restaurant_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - item
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ItemPost'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ItemPost'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemPost'
+          description: ''
+  /api/v1/{restaurant_slug}/{menu_slug}/item/{slug}/:
+    get:
+      operationId: item_retrieve
+      parameters:
+      - in: path
+        name: menu_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: restaurant_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - item
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemGet'
+          description: ''
+    put:
+      operationId: item_update
+      parameters:
+      - in: path
+        name: menu_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: restaurant_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - item
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ItemPost'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ItemPost'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemPost'
+          description: ''
+    patch:
+      operationId: item_partial_update
+      parameters:
+      - in: path
+        name: menu_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: restaurant_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - item
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedItemPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedItemPost'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedItemPost'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemPost'
+          description: ''
+    delete:
+      operationId: item_destroy
+      parameters:
+      - in: path
+        name: menu_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: restaurant_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - item
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/{restaurant_slug}/menu/:
+    get:
+      operationId: menu_list
+      description: |-
+        Restaurant slug included in URL.
+        Anyone can make get request for all menus and single menu details.
+        Only Owner or Employee can make post/put/patch/delete request.
+        Admin users have full access.
+      parameters:
+      - in: path
+        name: restaurant_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - menu
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuGet'
+          description: ''
+    post:
+      operationId: menu_create
+      description: |-
+        Restaurant slug included in URL.
+        Anyone can make get request for all menus and single menu details.
+        Only Owner or Employee can make post/put/patch/delete request.
+        Admin users have full access.
+      parameters:
+      - in: path
+        name: restaurant_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      tags:
+      - menu
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MenuPost'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MenuPost'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuPost'
+          description: ''
+  /api/v1/{restaurant_slug}/menu/{slug}/:
+    get:
+      operationId: menu_retrieve
+      description: |-
+        Restaurant slug included in URL.
+        Anyone can make get request for all menus and single menu details.
+        Only Owner or Employee can make post/put/patch/delete request.
+        Admin users have full access.
+      parameters:
+      - in: path
+        name: restaurant_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - menu
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuGet'
+          description: ''
+    put:
+      operationId: menu_update
+      description: |-
+        Restaurant slug included in URL.
+        Anyone can make get request for all menus and single menu details.
+        Only Owner or Employee can make post/put/patch/delete request.
+        Admin users have full access.
+      parameters:
+      - in: path
+        name: restaurant_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - menu
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MenuPost'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MenuPost'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuPost'
+          description: ''
+    patch:
+      operationId: menu_partial_update
+      description: |-
+        Restaurant slug included in URL.
+        Anyone can make get request for all menus and single menu details.
+        Only Owner or Employee can make post/put/patch/delete request.
+        Admin users have full access.
+      parameters:
+      - in: path
+        name: restaurant_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - menu
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMenuPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedMenuPost'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedMenuPost'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuPost'
+          description: ''
+    delete:
+      operationId: menu_destroy
+      description: |-
+        Restaurant slug included in URL.
+        Anyone can make get request for all menus and single menu details.
+        Only Owner or Employee can make post/put/patch/delete request.
+        Admin users have full access.
+      parameters:
+      - in: path
+        name: restaurant_slug
+        schema:
+          type: string
+          pattern: ^[\w-]+$
+        required: true
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - menu
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/add-employee/:
+    post:
+      operationId: add_employee_create
+      description: |-
+        Only Owner can add Employee.
+        User with CUSTOMER user type only can be converted as EMPLOYEE.
+      tags:
+      - add-employee
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/auth/customer-signup/:
+    post:
+      operationId: auth_customer_signup_create
+      description: |-
+        Register a new user, and sign in automatically.
+        New user will be customer type as we set default type as customer in the model field.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRegistration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CustomerRegistration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CustomerRegistration'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerRegistration'
+          description: ''
+  /api/v1/auth/owner-signup/:
+    post:
+      operationId: auth_owner_signup_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OwnerRegistration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OwnerRegistration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OwnerRegistration'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnerRegistration'
+          description: ''
+  /api/v1/auth/signin/:
+    post:
+      operationId: auth_signin_create
+      description: Sign in a user with username and password.
+      tags:
+      - auth
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/order/:
+    get:
+      operationId: order_list
+      tags:
+      - order
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+          description: ''
+    post:
+      operationId: order_create
+      tags:
+      - order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Order'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Order'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/order/{id}/:
+    get:
+      operationId: order_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - order
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/restaurant/:
+    get:
+      operationId: restaurant_list
+      description: |-
+        Any one can see the details of the restaurant.
+        Only Owner or Employee can update the restaurant.
+        Only Admin can delete the restaurant.
+      tags:
+      - restaurant
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RestaurantList'
+          description: ''
+  /api/v1/restaurant/{slug}/:
+    get:
+      operationId: restaurant_retrieve
+      description: |-
+        Any one can see the details of the restaurant.
+        Only Owner or Employee can update the restaurant.
+        Only Admin can delete the restaurant.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - restaurant
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestaurantList'
+          description: ''
+    put:
+      operationId: restaurant_update
+      description: |-
+        Any one can see the details of the restaurant.
+        Only Owner or Employee can update the restaurant.
+        Only Admin can delete the restaurant.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - restaurant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestaurantList'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RestaurantList'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RestaurantList'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestaurantList'
+          description: ''
+    patch:
+      operationId: restaurant_partial_update
+      description: |-
+        Any one can see the details of the restaurant.
+        Only Owner or Employee can update the restaurant.
+        Only Admin can delete the restaurant.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - restaurant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRestaurantList'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRestaurantList'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRestaurantList'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestaurantList'
+          description: ''
+  /api/v1/webhook/:
+    post:
+      operationId: webhook_create
+      description: Stripe webhook view to handle checkout session completed event.
+      tags:
+      - webhook
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    CustomerRegistration:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        password:
+          type: string
+          maxLength: 128
+      required:
+      - password
+      - username
+    ItemGet:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        menu:
+          $ref: '#/components/schemas/MiniMenuSerializerForItem'
+        item_name:
+          type: string
+          maxLength: 200
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+          maxLength: 500
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+      required:
+      - description
+      - id
+      - item_name
+      - menu
+      - price
+      - slug
+    ItemPost:
+      type: object
+      properties:
+        menu:
+          type: string
+          format: uuid
+        item_name:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 500
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+      required:
+      - description
+      - item_name
+      - price
+    MenuGet:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        restaurant:
+          $ref: '#/components/schemas/ResMini'
+        name:
+          type: string
+          title: Menu Name
+          maxLength: 100
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        details:
+          type: string
+          maxLength: 500
+      required:
+      - details
+      - id
+      - name
+      - restaurant
+      - slug
+    MenuPost:
+      type: object
+      properties:
+        name:
+          type: string
+          title: Menu Name
+          maxLength: 100
+        restaurant:
+          type: string
+          format: uuid
+        details:
+          type: string
+          maxLength: 500
+      required:
+      - details
+      - name
+    MiniMenuSerializerForItem:
+      type: object
+      properties:
+        name:
+          type: string
+          title: Menu Name
+          maxLength: 100
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        restaurant_name:
+          type: string
+          readOnly: true
+        restaurant_slug:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - restaurant_name
+      - restaurant_slug
+      - slug
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        placed_by:
+          type: string
+          format: uuid
+        payment_status:
+          $ref: '#/components/schemas/PaymentStatusEnum'
+        payment_method:
+          $ref: '#/components/schemas/PaymentMethodEnum'
+        payment_id:
+          type: string
+          nullable: true
+          maxLength: 200
+        order_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        subtotal:
+          type: string
+          readOnly: true
+        total:
+          type: string
+          readOnly: true
+      required:
+      - id
+      - order_items
+      - subtotal
+      - total
+    OrderItem:
+      type: object
+      properties:
+        item:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+      required:
+      - item
+    Owner:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+      required:
+      - id
+      - username
+    OwnerRegistration:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+        restaurant_name:
+          type: string
+        address:
+          type: string
+      required:
+      - address
+      - password
+      - restaurant_name
+      - username
+    PatchedItemPost:
+      type: object
+      properties:
+        menu:
+          type: string
+          format: uuid
+        item_name:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 500
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+    PatchedMenuPost:
+      type: object
+      properties:
+        name:
+          type: string
+          title: Menu Name
+          maxLength: 100
+        restaurant:
+          type: string
+          format: uuid
+        details:
+          type: string
+          maxLength: 500
+    PatchedRestaurantList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        restaurant_name:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        address:
+          type: string
+          maxLength: 100
+        owner:
+          $ref: '#/components/schemas/Owner'
+        employees:
+          type: array
+          items:
+            $ref: '#/components/schemas/Owner'
+    PaymentMethodEnum:
+      enum:
+      - cash
+      - card
+      type: string
+      description: |-
+        * `cash` - Cash
+        * `card` - Card
+    PaymentStatusEnum:
+      enum:
+      - unpaid
+      - paid
+      type: string
+      description: |-
+        * `unpaid` - Unpaid
+        * `paid` - Paid
+    ResMini:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        restaurant_name:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+      required:
+      - id
+      - owner
+      - restaurant_name
+      - slug
+    RestaurantList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        restaurant_name:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        address:
+          type: string
+          maxLength: 100
+        owner:
+          $ref: '#/components/schemas/Owner'
+        employees:
+          type: array
+          items:
+            $ref: '#/components/schemas/Owner'
+      required:
+      - address
+      - employees
+      - id
+      - owner
+      - restaurant_name
+      - slug
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"

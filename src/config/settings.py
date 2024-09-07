@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework.authtoken",
+    'drf_spectacular',
     "core",
     "order",
     "accounts",
@@ -136,8 +137,9 @@ AUTH_USER_MODEL = "accounts.User"
 # Rest Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',  # Add this line
+        'rest_framework.authentication.TokenAuthentication',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # Stripe
@@ -149,3 +151,11 @@ STRIPE_WEBHOOK_SECRET_KEY = env("STRIPE_WEBHOOK_SECRET_KEY")
 
 # Tax
 TAX_PERCENT = env("TAX_PERCENT")
+
+# Spectacular Settings
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API Collection for remote-kitchen-assesment.',
+    'DESCRIPTION': 'The application is developed using Django REST Framework. I have used rest_framework token authentication as api authentication and stripe for online payment.',
+    'VERSION': '1',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
