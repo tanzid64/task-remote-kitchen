@@ -35,8 +35,10 @@ The goal is to create a simple Django backend where users can manage restaurants
 - [x] Connect the ordering system to the menu, ensuring that users can create orders based on the available menu items.
 
 ### API Documentation
-Documented by POSTMAN
-Link: 
+[Documented by POSTMAN](https://documenter.getpostman.com/view/32603042/2sAXjRW9kE) 
+### After setup the application - created with drf-spectacular
+[Download API Schema](http:localhost:8000/api/v1/schema/)
+[Swagger Doc](http:localhost:8000/api/v1/schema/swagger-ui/)
 
 ### Project Installation Guide
 
@@ -50,6 +52,9 @@ make build
 ```
 ```bash
 make migrate
+```
+```bash
+make collectstatic
 ```
 ```bash
 make superuser
