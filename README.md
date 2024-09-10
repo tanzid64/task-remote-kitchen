@@ -49,6 +49,7 @@ git clone https://github.com/tanzid64/task-remote-kitchen.git
 ```bash
 cd task-remote-kitchen/
 ```
+For mac and Linux
 Start the docker container: 
 ```bash
 make build
@@ -61,6 +62,19 @@ make collectstatic
 ```
 ```bash
 make superuser
+```
+Make file sometimes might not work in windows. If it does not work the simply copy command from `Makefile` directory or follow the below instructions:
+```bash
+docker compose -f docker-compose.yml up --build -d --remove-orphans
+```
+```bash
+docker compose -f docker-compose.yml run --rm api python manage.py migrate
+```
+```bash
+docker compose -f docker-compose.yml run --rm api python manage.py collectstatic --no-input --clear
+```
+```bash
+docker compose -f docker-compose.yml run --rm api python manage.py createsuperuser
 ```
 ### Set up the .env file
 
